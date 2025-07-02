@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPTC v1.003</title>
+    <title>DPTC v1.004</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -316,6 +316,7 @@
                                     <text id="left-char" x="46" y="107" text-anchor="middle" font-size="10">L</text>
                                     <text id="right-char" x="58" y="107" text-anchor="middle" font-size="10">H</text>
                                 </g>
+                                <line id="line-dissapear" class="hidden" x1="65" y1="83" x2="65" y2="103" stroke="#000"></line>
                             </g>
 
                             <!-- ② the part that always shows (triangle + line) -->
@@ -442,6 +443,7 @@
             const rightChar = document.getElementById('right-char');
             const leftChar = document.getElementById('left-char');
             const installGroup = document.getElementById('install-group');
+            const lineDissapear = document.getElementById('line-dissapear');
             const sqrtToggle = document.getElementById('sqrtToggle');
             const maSlider = document.getElementById('maSlider');
             const maInput = document.getElementById('maInput');
@@ -603,9 +605,11 @@
                 if (installationToggle.checked) {
                     // shift everything in install-group down by 20 units
                     installGroup.setAttribute('transform', 'translate(0,20)');
+                    lineDissapear.classList.remove('hidden');
                 } else {
                     // reset back to original
                     installGroup.setAttribute('transform', 'translate(0,0)');
+                    lineDissapear.classList.add('hidden');
                 }
 
                 xLabel.textContent = `${X || 0}"`;
