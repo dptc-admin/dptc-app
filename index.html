@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPTC v1.002</title>
+    <title>DPTC v1.003</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -301,7 +301,7 @@
                         <svg id="diagram" viewBox="46 -247 400 200" overflow="visible" width="400" height="200">
 
                             <!-- ① the part that appears/disappears when installationToggle is ON -->
-                            <g id="install-group">
+                            <g id="install-group" transform="translate(0,0)">
                                 <!-- circle with “LT” -->
                                 <circle cx="52" cy="80" r="8" fill="#fff" stroke="#000"></circle>
                                 <text x="52" y="84" text-anchor="middle" font-size="10">LT</text>
@@ -331,10 +331,10 @@
                         </svg>
 
                         <!-- Taps and Dimensions -->
-                        <line x1="50" y1="350" x2="40" y2="350" stroke="#9ca3af" stroke-width="3" />
-                        <text text-anchor="middle" style="fill: #374151; font-size:14px; font-weight:500;" class="svg-text" y="350" x="37" writing-mode="sideways-lr" glyph-orientation-vertical="0">Bottom</text>
-                        <line x1="50" y1="100" x2="40" y2="100" stroke="#9ca3af" stroke-width="3" />
-                        <text text-anchor="middle" style="fill: #374151; font-size:14px; font-weight:500;" class="svg-text" y="100" x="37" writing-mode="sideways-lr" glyph-orientation-vertical="0">Top</text>
+                        <line x1="50" y1="350" x2="40" y2="350" class="hidden" stroke="#9ca3af" stroke-width="2" />
+                        <text text-anchor="middle" style="fill: #374151; font-size:14px; font-weight:500;" class="svg-text, hidden" y="350" x="37" writing-mode="sideways-lr" glyph-orientation-vertical="0">Bottom</text>
+                        <line x1="50" y1="100" x2="40" y2="100" stroke="#9ca3af" stroke-width="2" />
+                        <text text-anchor="middle" style="fill: #374151; font-size:14px; font-weight:500;" class="svg-text, hidden" y="100" x="37" writing-mode="sideways-lr" glyph-orientation-vertical="0">Top</text>
                         <text id="x-label" x="258" y="225" text-anchor="middle" class="svg-text" style="fill: #374151; font-size:14px; font-weight:500;" writing-mode="tb-rl" glyph-orientation-vertical="0">X</text>
                         <line x1="258" y1="105" x2="258" y2="210" stroke="#4b5563" stroke-width="1.5" stroke-dasharray="4" marker-start="url(#arrow)"></line>
                         <line x1="258" y1="240" x2="258" y2="345" stroke="#4b5563" stroke-width="1.5" stroke-dasharray="4" marker-end="url(#arrow)"></line>
@@ -441,6 +441,7 @@
             const tagNameLabel = document.getElementById('tagNameLabel');
             const rightChar = document.getElementById('right-char');
             const leftChar = document.getElementById('left-char');
+            const installGroup = document.getElementById('install-group');
             const sqrtToggle = document.getElementById('sqrtToggle');
             const maSlider = document.getElementById('maSlider');
             const maInput = document.getElementById('maInput');
@@ -599,8 +600,16 @@
                     leftChar.textContent = "H";
                 }
 
+                if (installationToggle.checked) {
+                    // shift everything in install-group down by 20 units
+                    installGroup.setAttribute('transform', 'translate(0,20)');
+                } else {
+                    // reset back to original
+                    installGroup.setAttribute('transform', 'translate(0,0)');
+                }
+
                 xLabel.textContent = `${X || 0}"`;
-                tagNameLabel.textContent = `Tag: tagNameFR`;
+                tagNameLabel.textContent = `Tag: ${tagNameFR}`;
                 
             }
 
@@ -618,8 +627,16 @@
                     return;
                 }
 
+                if (revPressureSideToggle.checked) {
+                    rightChar.textContent = "H";
+                    leftChar.textContent = "L";
+                } else {
+                    rightChar.textContent = "L";
+                    leftChar.textContent = "H";
+                }
+
                 xLabel.textContent = `${X || 0}"`;
-                tagNameLabel.textContent = `Tag: tagNameFR`;
+                tagNameLabel.textContent = `Tag: ${tagNameFR}`;
 
                 const calculatedSg = Math.abs(span) / X;
                 reverseSgResultEl.textContent = calculatedSg.toFixed(3);
