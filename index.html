@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPTC v7</title>
+    <title>DPTC v8</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -280,7 +280,7 @@
             <!-- Right Column: Vessel Graphic & Flow Calculators -->
             <div class="space-y-6 lg:space-y-8">
                 <div class="bg-white p-6 rounded-xl shadow-lg flex items-center justify-center">
-                    <svg id="vessel-svg" viewBox="0 0 300 400" class="w-full h-auto max-w-sm">
+                    <svg id="vessel-svg" viewBox="0 0 300 400" overflow="visible" class="w-full h-auto max-w-sm">
                         <!-- Vessel Body -->
                         <path d="M50,50 Q50,20 80,20 H220 Q250,20 250,50 V350 Q250,380 220,380 H80 Q50,380 50,350 Z" fill="#e5e7eb" stroke="#9ca3af" stroke-width="2" />
 
@@ -294,9 +294,9 @@
 
                         <!-- Taps and Dimensions -->
                         <line x1="50" y1="350" x2="30" y2="350" stroke="#9ca3af" stroke-width="3" />
-                        <text x="25" y="355" class="svg-text" style="fill: #374151; font-size:14px; font-weight:500;" text-anchor="end">Bottom</text>
+                        <text x="25" y="355" writing-mode="tb-rl" glyph-orientation-vertical="0" class="svg-text" style="fill: #374151; font-size:14px; font-weight:500;" text-anchor="middle">Bottom</text>
                         <line x1="50" y1="100" x2="30" y2="100" stroke="#9ca3af" stroke-width="3" />
-                        <text x="25" y="105" class="svg-text" style="fill: #374151; font-size:14px; font-weight:500;" text-anchor="end">Top</text>
+                        <text x="25" y="105" writing-mode="tb-rl" glyph-orientation-vertical="0" class="svg-text" style="fill: #374151; font-size:14px; font-weight:500;" text-anchor="middle">Top</text>
                         <line x1="265" y1="100" x2="265" y2="350" stroke="#4b5563" stroke-width="1.5" stroke-dasharray="4" />
                         <text id="x-label" x="270" y="225" class="svg-text" style="fill: #374151; font-size:14px; font-weight:500;">X</text>
                     </svg>
