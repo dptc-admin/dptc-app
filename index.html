@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPTC</title>
+    <title>DPTC v7</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="manifest" href="manifest.json">
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -98,12 +97,15 @@
             }
         /* Remove number input spinners */
         input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button {
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=text]::-webkit-inner-spin-button,
+        input[type=text]::-webkit-outer-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
 
-        input[type=number] {
+        input[type=number],
+        input[type=text] {
             -moz-appearance: textfield;
         }
     </style>
@@ -119,7 +121,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
             <!-- Left Column: Controls -->
             <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-lg">
-                <div class="flex flex-wrap justify-between items-center gap-4 mb-6 border-b pb-3">
+                <div class="flex flex-wrap justify-between items-center gap-4 mb-4 border-b pb-4">
                     <h2 class="text-2xl font-semibold">Level Configuration</h2>
                     <div class="sm:w-auto w-full md:w-1/3">
                         <label for="tagNumber" class="sr-only">Tag Number</label>
@@ -127,87 +129,149 @@
                     </div>
                 </div>
 
-                <div class="control-panel-grid">
-                    <!-- Installation Type -->
-                    <div class="flex flex-col p-4 bg-gray-50 rounded-lg border">
-                        <label class="font-semibold text-gray-700 mb-2">Installation Type</label>
-                        <div class="flex items-center space-x-3">
-                            <span class="text-sm">Bottom Tap Direct</span>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="installationToggle" class="sr-only peer">
-                                <div class="w-11 h-7 bg-gray-300 rounded-full peer-checked:bg-blue-500 toggle-bg"></div>
-                            </label>
-                            <span class="text-sm font-medium">Both Taps Wet Leg</span>
+                <!-- Reverse Calculation Toggle -->
+                <div class="mb-6 p-4 bg-gray-50 rounded-lg border">
+                    <label class="font-semibold text-gray-700 mb-2">Reverse Calculation (for Single Process Liquid SG)</label>
+                    <div class="flex items-center space-x-3">
+                        <span class="text-sm">Off</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="reverseCalcToggle" class="sr-only peer">
+                            <div class="w-11 h-7 bg-gray-300 rounded-full peer-checked:bg-blue-500 toggle-bg"></div>
+                        </label>
+                        <span class="text-sm font-medium">On</span>
+                    </div>
+                </div>
+
+                <!-- Main Calculator Panel -->
+                <div id="mainCalculatorPanel">
+                    <div class="control-panel-grid">
+                        <!-- Installation Type -->
+                        <div class="flex flex-col p-4 bg-gray-50 rounded-lg border">
+                            <label class="font-semibold text-gray-700 mb-2">Installation Type</label>
+                            <div class="flex items-center space-x-3">
+                                <span class="text-sm">Bottom Tap Direct</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="installationToggle" class="sr-only peer">
+                                    <div class="w-11 h-7 bg-gray-300 rounded-full peer-checked:bg-blue-500 toggle-bg"></div>
+                                </label>
+                                <span class="text-sm font-medium">Both Taps Wet Leg</span>
+                            </div>
+                        </div>
+
+                        <!-- Pressure Side -->
+                        <div class="flex flex-col p-4 bg-gray-50 rounded-lg border">
+                            <label class="font-semibold text-gray-700 mb-2">Transmitter High Side</label>
+                            <div class="flex items-center space-x-3">
+                                <span class="text-sm">Bottom Tap</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="pressureSideToggle" class="sr-only peer">
+                                    <div class="w-11 h-7 bg-gray-300 rounded-full peer-checked:bg-blue-500 toggle-bg"></div>
+                                </label>
+                                <span class="text-sm font-medium">Top Tap</span>
+                            </div>
+                        </div>
+
+                        <!-- Level Type -->
+                        <div class="flex flex-col p-4 bg-gray-50 rounded-lg border">
+                            <label class="font-semibold text-gray-700 mb-2">Level Type</label>
+                            <div class="flex items-center space-x-3">
+                                <span class="text-sm">Single Liquid</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="levelTypeToggle" class="sr-only peer">
+                                    <div class="w-11 h-7 bg-gray-300 rounded-full peer-checked:bg-blue-500 toggle-bg"></div>
+                                </label>
+                                <span class="text-sm font-medium">Interface</span>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Pressure Side -->
-                    <div class="flex flex-col p-4 bg-gray-50 rounded-lg border">
-                        <label class="font-semibold text-gray-700 mb-2">Transmitter High Side</label>
-                        <div class="flex items-center space-x-3">
-                            <span class="text-sm">Bottom Tap</span>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="pressureSideToggle" class="sr-only peer">
-                                <div class="w-11 h-7 bg-gray-300 rounded-full peer-checked:bg-blue-500 toggle-bg"></div>
-                            </label>
-                            <span class="text-sm font-medium">Top Tap</span>
+                    <h3 class="text-xl font-semibold mt-8 mb-4 border-b pb-2">Parameters</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Inputs -->
+                        <div>
+                            <label for="tapDistance" class="block text-sm font-medium text-gray-700">Tap-to-Tap Distance (X)</label>
+                            <input type="text" id="tapDistance" value="100" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="processSg" id="processSgLabel" class="block text-sm font-medium text-gray-700">Process Liquid SG (S1)</label>
+                            <input type="text" id="processSg" value="0.8" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div id="interfaceSgContainer" class="hidden">
+                            <label for="interfaceSg" id="interfaceSgLabel" class="block text-sm font-medium text-gray-700">Heavy Liquid SG (S2)</label>
+                            <input type="text" id="interfaceSg" value="1.0" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="sealLiquidSg" class="block text-sm font-medium text-gray-700">Seal Liquid SG (S3)</label>
+                            <div class="flex items-center space-x-2 mt-1">
+                                <input type="text" id="sealLiquidSg" value="1.13" class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                <button id="glycolBtn" class="px-3 py-2 bg-gray-200 text-sm rounded-md hover:bg-gray-300">Glycol</button>
+                                <button id="glycerinBtn" class="px-3 py-2 bg-gray-200 text-sm rounded-md hover:bg-gray-300">Glycerin</button>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Level Type -->
-                    <div class="flex flex-col p-4 bg-gray-50 rounded-lg border">
-                        <label class="font-semibold text-gray-700 mb-2">Level Type</label>
-                        <div class="flex items-center space-x-3">
-                            <span class="text-sm">Single Liquid</span>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="levelTypeToggle" class="sr-only peer">
-                                <div class="w-11 h-7 bg-gray-300 rounded-full peer-checked:bg-blue-500 toggle-bg"></div>
-                            </label>
-                            <span class="text-sm font-medium">Interface</span>
+                    <!-- Main Results -->
+                    <div class="mt-8 pt-6 border-t">
+                        <h3 class="text-xl font-semibold mb-4">Level Calibration Results (inH₂O)</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                            <div class="bg-blue-100 p-4 rounded-lg">
+                                <h4 class="text-sm font-bold text-blue-800">LRV</h4>
+                                <p id="lrvResult" class="text-2xl font-mono font-bold text-blue-900">-</p>
+                            </div>
+                            <div class="bg-green-100 p-4 rounded-lg">
+                                <h4 class="text-sm font-bold text-green-800">URV</h4>
+                                <p id="urvResult" class="text-2xl font-mono font-bold text-green-900">-</p>
+                            </div>
+                            <div class="bg-yellow-100 p-4 rounded-lg">
+                                <h4 class="text-sm font-bold text-yellow-800">Span</h4>
+                                <p id="spanResult" class="text-2xl font-mono font-bold text-yellow-900">-</p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <h3 class="text-xl font-semibold mt-8 mb-4 border-b pb-2">Parameters</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Inputs -->
-                    <div>
-                        <label for="tapDistance" class="block text-sm font-medium text-gray-700">Tap-to-Tap Distance (X)</label>
-                        <input type="number" id="tapDistance" value="100" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="processSg" id="processSgLabel" class="block text-sm font-medium text-gray-700">Process Liquid SG (S1)</label>
-                        <input type="number" id="processSg" value="0.8" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div id="interfaceSgContainer" class="hidden">
-                        <label for="interfaceSg" id="interfaceSgLabel" class="block text-sm font-medium text-gray-700">Heavy Liquid SG (S2)</label>
-                        <input type="number" id="interfaceSg" value="1.0" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                        <label for="sealLiquidSg" class="block text-sm font-medium text-gray-700">Seal Liquid SG (S3)</label>
-                        <div class="flex items-center space-x-2 mt-1">
-                            <input type="number" id="sealLiquidSg" value="1.13" class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                            <button id="glycolBtn" class="px-3 py-2 bg-gray-200 text-sm rounded-md hover:bg-gray-300">Glycol</button>
-                            <button id="glycerinBtn" class="px-3 py-2 bg-gray-200 text-sm rounded-md hover:bg-gray-300">Glycerin</button>
+                <!-- Reverse Calculator Panel -->
+                <div id="reverseCalculatorPanel" class="hidden">
+                    <h3 class="text-xl font-semibold mb-4 border-b pb-2">Reverse Calculate Process SG</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="revTapDistance" class="block text-sm font-medium text-gray-700">Tap-to-Tap Distance (X)</label>
+                            <input type="text" id="revTapDistance" value="100" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div class="flex flex-col p-4 bg-gray-50 rounded-lg border md:col-span-2">
+                            <label class="font-semibold text-gray-700 mb-2">Transmitter High Side</label>
+                            <div class="flex items-center space-x-3">
+                                <span class="text-sm">Bottom Tap</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="revPressureSideToggle" class="sr-only peer">
+                                    <div class="w-11 h-7 bg-gray-300 rounded-full peer-checked:bg-blue-500 toggle-bg"></div>
+                                </label>
+                                <span class="text-sm font-medium">Top Tap</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="asFoundLrv" class="block text-sm font-medium text-gray-700">As Found LRV (inH₂O)</label>
+                            <input type="text" id="asFoundLrv" value="-113" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="asFoundUrv" class="block text-sm font-medium text-gray-700">As Found URV (inH₂O)</label>
+                            <input type="text" id="asFoundUrv" value="-33" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="revSealLiquidSg" class="block text-sm font-medium text-gray-700">Wet Leg SG (S3)</label>
+                            <div class="flex items-center space-x-2 mt-1">
+                                <input type="text" id="revSealLiquidSg" value="1.13" class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                <button id="revGlycolBtn" class="px-3 py-2 bg-gray-200 text-sm rounded-md hover:bg-gray-300">Glycol</button>
+                                <button id="revGlycerinBtn" class="px-3 py-2 bg-gray-200 text-sm rounded-md hover:bg-gray-300">Glycerin</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Results -->
-                <div class="mt-8 pt-6 border-t">
-                    <h3 class="text-xl font-semibold mb-4">Level Calibration Results (inH₂O)</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-                        <div class="bg-blue-100 p-4 rounded-lg">
-                            <h4 class="text-sm font-bold text-blue-800">LRV</h4>
-                            <p id="lrvResult" class="text-2xl font-mono font-bold text-blue-900">-</p>
-                        </div>
-                        <div class="bg-green-100 p-4 rounded-lg">
-                            <h4 class="text-sm font-bold text-green-800">URV</h4>
-                            <p id="urvResult" class="text-2xl font-mono font-bold text-green-900">-</p>
-                        </div>
-                        <div class="bg-yellow-100 p-4 rounded-lg">
-                            <h4 class="text-sm font-bold text-yellow-800">Span</h4>
-                            <p id="spanResult" class="text-2xl font-mono font-bold text-yellow-900">-</p>
+                    <!-- Reverse Calc Results -->
+                    <div class="mt-8 pt-6 border-t text-center">
+                        <h3 class="text-xl font-semibold mb-4">Result</h3>
+                        <div class="bg-purple-100 p-4 rounded-lg">
+                            <h4 class="text-sm font-bold text-purple-800">Calculated Process SG (S1)</h4>
+                            <p id="reverseSgResult" class="text-3xl font-mono font-bold text-purple-900">-</p>
                         </div>
                     </div>
                 </div>
@@ -255,7 +319,7 @@
                         <div class="flex justify-between items-center mb-2">
                             <label for="maInput" class="font-medium text-gray-700">4-20mA Signal</label>
                             <div class="flex items-center space-x-2">
-                                <input type="number" id="maInput" min="4" max="20" step="0.1" value="12" class="w-24 p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-center font-mono">
+                                <input type="text" id="maInput" value="12" class="w-24 p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-center font-mono">
                                 <span class="font-medium text-gray-700">mA</span>
                             </div>
                         </div>
@@ -272,13 +336,13 @@
                     <div class="space-y-4">
                         <div>
                             <label for="transmitterUrv" class="block text-sm font-medium text-gray-700">Transmitter Range (0 - URV inH₂O)</label>
-                            <input type="number" id="transmitterUrv" value="150" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                            <input type="text" id="transmitterUrv" value="150" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                         </div>
                         <div>
                             <div class="flex justify-between items-center mb-2">
                                 <label for="desiredFlowInput" class="font-medium text-gray-700">Desired Flow</label>
                                 <div class="flex items-center space-x-2">
-                                    <input type="number" id="desiredFlowInput" min="0" max="100" step="0.1" value="85" class="w-24 p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-center font-mono">
+                                    <input type="text" id="desiredFlowInput" value="85" class="w-24 p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-center font-mono">
                                     <span class="font-medium text-gray-700">%</span>
                                 </div>
                             </div>
@@ -292,192 +356,240 @@
                 </div>
             </div>
         </div>
+
+        <!-- Footer -->
+        <footer class="text-center py-8">
+            <p class="text-sm text-gray-500">Created by Wade Oliver</p>
+        </footer>
     </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // --- Get all DOM Elements ---
-        const installationToggle = document.getElementById('installationToggle');
-        const pressureSideToggle = document.getElementById('pressureSideToggle');
-        const levelTypeToggle = document.getElementById('levelTypeToggle');
-        const tapDistanceInput = document.getElementById('tapDistance');
-        const processSgInput = document.getElementById('processSg');
-        const processSgLabel = document.getElementById('processSgLabel');
-        const interfaceSgContainer = document.getElementById('interfaceSgContainer');
-        const interfaceSgInput = document.getElementById('interfaceSg');
-        const sealLiquidSgInput = document.getElementById('sealLiquidSg');
-        const glycolBtn = document.getElementById('glycolBtn');
-        const glycerinBtn = document.getElementById('glycerinBtn');
-        const lrvResultEl = document.getElementById('lrvResult');
-        const urvResultEl = document.getElementById('urvResult');
-        const spanResultEl = document.getElementById('spanResult');
-        const xLabel = document.getElementById('x-label');
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Get all DOM Elements ---
+            const reverseCalcToggle = document.getElementById('reverseCalcToggle');
+            const mainCalculatorPanel = document.getElementById('mainCalculatorPanel');
+            const reverseCalculatorPanel = document.getElementById('reverseCalculatorPanel');
 
-        const sqrtToggle = document.getElementById('sqrtToggle');
-        const maSlider = document.getElementById('maSlider');
-        const maInput = document.getElementById('maInput');
-        const flowResultEl = document.getElementById('flowResult');
+            // Main calculator elements
+            const installationToggle = document.getElementById('installationToggle');
+            const pressureSideToggle = document.getElementById('pressureSideToggle');
+            const levelTypeToggle = document.getElementById('levelTypeToggle');
+            const tapDistanceInput = document.getElementById('tapDistance');
+            const processSgInput = document.getElementById('processSg');
+            const processSgLabel = document.getElementById('processSgLabel');
+            const interfaceSgContainer = document.getElementById('interfaceSgContainer');
+            const interfaceSgInput = document.getElementById('interfaceSg');
+            const sealLiquidSgInput = document.getElementById('sealLiquidSg');
+            const glycolBtn = document.getElementById('glycolBtn');
+            const glycerinBtn = document.getElementById('glycerinBtn');
+            const lrvResultEl = document.getElementById('lrvResult');
+            const urvResultEl = document.getElementById('urvResult');
+            const spanResultEl = document.getElementById('spanResult');
 
-        const transmitterUrvInput = document.getElementById('transmitterUrv');
-        const desiredFlowSlider = document.getElementById('desiredFlowSlider');
-        const desiredFlowInput = document.getElementById('desiredFlowInput');
-        const simulationResultEl = document.getElementById('simulationResult');
+            // Reverse calculator elements
+            const revTapDistanceInput = document.getElementById('revTapDistance');
+            const asFoundLrvInput = document.getElementById('asFoundLrv');
+            const asFoundUrvInput = document.getElementById('asFoundUrv');
+            const revSealLiquidSgInput = document.getElementById('revSealLiquidSg');
+            const revPressureSideToggle = document.getElementById('revPressureSideToggle');
+            const revGlycolBtn = document.getElementById('revGlycolBtn');
+            const revGlycerinBtn = document.getElementById('revGlycerinBtn');
+            const reverseSgResultEl = document.getElementById('reverseSgResult');
 
-        // SVG Graphic elements
-        const processLiquidRect = document.getElementById('processLiquid');
-        const interfaceLiquidRect = document.getElementById('interfaceLiquid');
-        const processLiquidLabel = document.getElementById('processLiquidLabel');
-        const interfaceLiquidLabel = document.getElementById('interfaceLiquidLabel');
+            // Common elements
+            const xLabel = document.getElementById('x-label');
+            const sqrtToggle = document.getElementById('sqrtToggle');
+            const maSlider = document.getElementById('maSlider');
+            const maInput = document.getElementById('maInput');
+            const flowResultEl = document.getElementById('flowResult');
+            const transmitterUrvInput = document.getElementById('transmitterUrv');
+            const desiredFlowSlider = document.getElementById('desiredFlowSlider');
+            const desiredFlowInput = document.getElementById('desiredFlowInput');
+            const simulationResultEl = document.getElementById('simulationResult');
+            const processLiquidRect = document.getElementById('processLiquid');
+            const interfaceLiquidRect = document.getElementById('interfaceLiquid');
+            const processLiquidLabel = document.getElementById('processLiquidLabel');
+            const interfaceLiquidLabel = document.getElementById('interfaceLiquidLabel');
 
-        // --- Event Listeners ---
-        const allLevelInputs = [installationToggle, pressureSideToggle, levelTypeToggle, tapDistanceInput, processSgInput, interfaceSgInput, sealLiquidSgInput];
-        allLevelInputs.forEach(input => input.addEventListener('input', calculateLevel));
+            // --- Event Listeners ---
 
-        glycolBtn.addEventListener('click', () => { sealLiquidSgInput.value = 1.13; calculateLevel(); });
-        glycerinBtn.addEventListener('click', () => { sealLiquidSgInput.value = 1.26; calculateLevel(); });
+            // Main toggle to switch between calculators
+            reverseCalcToggle.addEventListener('change', () => {
+                const isReverse = reverseCalcToggle.checked;
+                mainCalculatorPanel.classList.toggle('hidden', isReverse);
+                reverseCalculatorPanel.classList.toggle('hidden', !isReverse);
 
-        levelTypeToggle.addEventListener('change', () => {
-            const isInterface = levelTypeToggle.checked;
-            interfaceSgContainer.style.display = isInterface ? 'block' : 'none';
+                if (isReverse) {
+                    levelTypeToggle.checked = false;
+                    levelTypeToggle.dispatchEvent(new Event('change'));
+                }
 
-            if (isInterface) {
-                processSgLabel.textContent = 'Light Liquid SG (S1)';
-            } else {
-                processSgLabel.textContent = 'Process Liquid SG (S1)';
+                if (isReverse) {
+                    calculateProcessSg();
+                } else {
+                    calculateLevel();
+                }
+            });
+
+            // Listeners for Main Calculator
+            const mainCalcInputs = [installationToggle, pressureSideToggle, levelTypeToggle, tapDistanceInput, processSgInput, interfaceSgInput, sealLiquidSgInput];
+            mainCalcInputs.forEach(input => input.addEventListener('input', calculateLevel));
+            glycolBtn.addEventListener('click', () => { sealLiquidSgInput.value = 1.13; calculateLevel(); });
+            glycerinBtn.addEventListener('click', () => { sealLiquidSgInput.value = 1.26; calculateLevel(); });
+
+            levelTypeToggle.addEventListener('change', () => {
+                const isInterface = levelTypeToggle.checked;
+                interfaceSgContainer.style.display = isInterface ? 'block' : 'none';
+                reverseCalcToggle.disabled = isInterface;
+                if (isInterface) {
+                    processSgLabel.textContent = 'Light Liquid SG (S1)';
+                } else {
+                    processSgLabel.textContent = 'Process Liquid SG (S1)';
+                }
+            });
+
+            // Listeners for Reverse Calculator
+            const reverseCalcInputs = [revTapDistanceInput, asFoundLrvInput, asFoundUrvInput, revSealLiquidSgInput, revPressureSideToggle];
+            reverseCalcInputs.forEach(input => input.addEventListener('input', calculateProcessSg));
+            revGlycolBtn.addEventListener('click', () => { revSealLiquidSgInput.value = 1.13; calculateProcessSg(); });
+            revGlycerinBtn.addEventListener('click', () => { revSealLiquidSgInput.value = 1.26; calculateProcessSg(); });
+
+
+            // Listeners for Flow Calculators
+            sqrtToggle.addEventListener('input', calculateFlow);
+            maSlider.addEventListener('input', () => { maInput.value = parseFloat(maSlider.value).toFixed(1); calculateFlow(); });
+            maInput.addEventListener('input', () => {
+                let v = maInput.value;
+                if (v && !isNaN(v)) {
+                    maSlider.value = Math.max(4, Math.min(20, parseFloat(v)));
+                }
+                calculateFlow();
+            });
+            desiredFlowSlider.addEventListener('input', () => { desiredFlowInput.value = parseFloat(desiredFlowSlider.value).toFixed(1); calculateFlowSimulation(); });
+            desiredFlowInput.addEventListener('input', () => {
+                let v = desiredFlowInput.value;
+                if (v && !isNaN(v)) {
+                    desiredFlowSlider.value = Math.max(0, Math.min(100, parseFloat(v)));
+                }
+                calculateFlowSimulation();
+            });
+            transmitterUrvInput.addEventListener('input', calculateFlowSimulation);
+
+            // --- Graphic Update Function ---
+            function updateGraphic() {
+                const isInterface = levelTypeToggle.checked;
+                const s1Value = parseFloat(processSgInput.value) || 0;
+                const s2Value = parseFloat(interfaceSgInput.value) || 0;
+
+                if (isInterface) {
+                    interfaceLiquidRect.style.display = 'block';
+                    interfaceLiquidLabel.style.display = 'block';
+                    processLiquidRect.setAttribute('y', 100);
+                    processLiquidRect.setAttribute('height', 125);
+                    interfaceLiquidRect.setAttribute('y', 225);
+                    interfaceLiquidRect.setAttribute('height', 125);
+                    processLiquidLabel.textContent = `S1 (Light): ${s1Value.toFixed(2)}`;
+                    interfaceLiquidLabel.textContent = `S2 (Heavy): ${s2Value.toFixed(2)}`;
+                    processLiquidLabel.setAttribute('y', 100 + 125 / 2);
+                    interfaceLiquidLabel.setAttribute('y', 225 + 125 / 2);
+                } else {
+                    interfaceLiquidRect.style.display = 'none';
+                    interfaceLiquidLabel.style.display = 'none';
+                    processLiquidRect.setAttribute('y', 100);
+                    processLiquidRect.setAttribute('height', 250);
+                    processLiquidLabel.textContent = `S1: ${s1Value.toFixed(2)}`;
+                    processLiquidLabel.setAttribute('y', 100 + 250 / 2);
+                }
             }
+
+
+            // --- Calculation Functions ---
+            function calculateLevel() {
+                if (reverseCalcToggle.checked) return;
+                updateGraphic();
+
+                const isHighSideTop = pressureSideToggle.checked;
+                const isInterface = levelTypeToggle.checked;
+                const X = parseFloat(tapDistanceInput.value) || 0;
+                const S1_light = parseFloat(processSgInput.value) || 0;
+                const S2_heavy = isInterface ? (parseFloat(interfaceSgInput.value) || 0) : S1_light;
+                const S3_seal = parseFloat(sealLiquidSgInput.value) || 0;
+
+                let process_side_pressure_at_lrv, process_side_pressure_at_urv;
+
+                if (isInterface) {
+                    process_side_pressure_at_lrv = S1_light * X;
+                    process_side_pressure_at_urv = S2_heavy * X;
+                } else {
+                    process_side_pressure_at_lrv = 0;
+                    process_side_pressure_at_urv = S1_light * X;
+                }
+
+                const other_leg_pressure = S3_seal * X;
+
+                let p_hp_lrv, p_lp_lrv, p_hp_urv, p_lp_urv;
+                if (isHighSideTop) {
+                    p_hp_lrv = p_hp_urv = other_leg_pressure;
+                    p_lp_lrv = process_side_pressure_at_lrv;
+                    p_lp_urv = process_side_pressure_at_urv;
+                } else {
+                    p_hp_lrv = process_side_pressure_at_lrv;
+                    p_hp_urv = process_side_pressure_at_urv;
+                    p_lp_lrv = p_lp_urv = other_leg_pressure;
+                }
+
+                const lrv = p_hp_lrv - p_lp_lrv;
+                const urv = p_hp_urv - p_lp_urv;
+                const span = urv - lrv;
+
+                lrvResultEl.textContent = lrv.toFixed(2);
+                urvResultEl.textContent = urv.toFixed(2);
+                spanResultEl.textContent = Math.abs(span).toFixed(2);
+
+                xLabel.textContent = `X = ${X || 0}`;
+            }
+
+            function calculateProcessSg() {
+                if (!reverseCalcToggle.checked) return;
+
+                const X = parseFloat(revTapDistanceInput.value) || 0;
+                const lrv = parseFloat(asFoundLrvInput.value) || 0;
+                const urv = parseFloat(asFoundUrvInput.value) || 0;
+
+                const span = urv - lrv;
+
+                if (X === 0) {
+                    reverseSgResultEl.textContent = "Error: X=0";
+                    return;
+                }
+
+                const calculatedSg = Math.abs(span) / X;
+                reverseSgResultEl.textContent = calculatedSg.toFixed(3);
+            }
+
+            function calculateFlow() {
+                const isSqrt = sqrtToggle.checked;
+                const maValue = parseFloat(maInput.value);
+                const dpPercent = ((maValue - 4) / 16) * 100;
+                let flowPercent = isSqrt ? (dpPercent >= 0 ? Math.sqrt(dpPercent / 100) * 100 : 0) : dpPercent;
+                flowResultEl.textContent = `${flowPercent.toFixed(2)} %`;
+            }
+
+            function calculateFlowSimulation() {
+                const urv = parseFloat(transmitterUrvInput.value) || 0;
+                const desiredFlow = parseFloat(desiredFlowInput.value) || 0;
+                const flowDecimal = desiredFlow / 100;
+                const requiredDp = (flowDecimal * flowDecimal) * urv;
+                simulationResultEl.textContent = requiredDp.toFixed(3);
+            }
+
+            // --- Initial calls to set everything up ---
+            levelTypeToggle.dispatchEvent(new Event('change'));
+            calculateLevel();
+            calculateProcessSg();
+            calculateFlow();
+            calculateFlowSimulation();
         });
-
-        // Flow Signal Listeners
-        sqrtToggle.addEventListener('input', calculateFlow);
-        maSlider.addEventListener('input', () => { maInput.value = parseFloat(maSlider.value).toFixed(1); calculateFlow(); });
-        maInput.addEventListener('input', () => { let v = parseFloat(maInput.value); if(!isNaN(v)) maSlider.value = Math.max(4, Math.min(20, v)); calculateFlow(); });
-
-        // Flow Simulation Listeners
-        desiredFlowSlider.addEventListener('input', () => { desiredFlowInput.value = parseFloat(desiredFlowSlider.value).toFixed(1); calculateFlowSimulation(); });
-        desiredFlowInput.addEventListener('input', () => { let v = parseFloat(desiredFlowInput.value); if(!isNaN(v)) desiredFlowSlider.value = Math.max(0, Math.min(100, v)); calculateFlowSimulation(); });
-        transmitterUrvInput.addEventListener('input', calculateFlowSimulation);
-
-        // --- Graphic Update Function ---
-        function updateGraphic() {
-            const isInterface = levelTypeToggle.checked;
-            const s1Value = parseFloat(processSgInput.value) || 0;
-            const s2Value = parseFloat(interfaceSgInput.value) || 0;
-
-            if (isInterface) {
-                interfaceLiquidRect.style.display = 'block';
-                interfaceLiquidLabel.style.display = 'block';
-                processLiquidRect.setAttribute('y', 100);
-                processLiquidRect.setAttribute('height', 125);
-                interfaceLiquidRect.setAttribute('y', 225);
-                interfaceLiquidRect.setAttribute('height', 125);
-                processLiquidLabel.textContent = `S1 (Light): ${s1Value.toFixed(2)}`;
-                interfaceLiquidLabel.textContent = `S2 (Heavy): ${s2Value.toFixed(2)}`;
-                processLiquidLabel.setAttribute('y', 100 + 125 / 2);
-                interfaceLiquidLabel.setAttribute('y', 225 + 125 / 2);
-            } else {
-                interfaceLiquidRect.style.display = 'none';
-                interfaceLiquidLabel.style.display = 'none';
-                processLiquidRect.setAttribute('y', 100);
-                processLiquidRect.setAttribute('height', 250);
-                processLiquidLabel.textContent = `S1: ${s1Value.toFixed(2)}`;
-                processLiquidLabel.setAttribute('y', 100 + 250 / 2);
-            }
-        }
-
-
-        // --- Calculation Functions ---
-        function calculateLevel() {
-            updateGraphic();
-
-            // Get settings
-            const isHighSideTop = pressureSideToggle.checked;
-            const isInterface = levelTypeToggle.checked;
-            const useSealLiquidForLPLeg = installationToggle.checked; // true if "Both Taps Wet Leg"
-
-            // Get physical parameters
-            const X = parseFloat(tapDistanceInput.value) || 0;
-            const S1_light = parseFloat(processSgInput.value) || 0;
-            const S2_heavy = isInterface ? (parseFloat(interfaceSgInput.value) || 0) : S1_light;
-            const S3_seal = parseFloat(sealLiquidSgInput.value) || 0;
-
-            // ***** CORE LOGIC AS PER FINAL REQUEST *****
-            // The logic is now identical for both "Direct Connect" and "Both Taps Wet Leg",
-            // representing a closed tank with two different liquid-filled legs.
-
-            let processLeg_Sg, sealLeg_Sg;
-
-            // The "Installation Type" toggle now determines which SG applies to which leg.
-            if (useSealLiquidForLPLeg) { // "Both Taps Wet Leg" selected
-                processLeg_Sg = S1_light;
-                sealLeg_Sg = S3_seal;
-            } else { // "Bottom Tap Direct" selected
-                processLeg_Sg = S1_light;
-                sealLeg_Sg = S3_seal; // Per your request, this now mimics the two-wet-leg calculation.
-            }
-
-            // Determine process pressure heads at 0% and 100%
-            let process_side_pressure_at_lrv, process_side_pressure_at_urv;
-
-            if (isInterface) {
-                // Here, the "process side" is the one that sees the interface change.
-                process_side_pressure_at_lrv = (S1_light) * X; // Full of light liquid
-                process_side_pressure_at_urv = (S2_heavy) * X; // Full of heavy liquid
-            } else {
-                process_side_pressure_at_lrv = 0; // Empty tank
-                process_side_pressure_at_urv = (processLeg_Sg) * X; // Full tank
-            }
-
-            // The pressure from the "other" leg (the one not seeing the level change) is constant.
-            const other_leg_pressure = sealLeg_Sg * X;
-
-            let p_hp_lrv, p_lp_lrv, p_hp_urv, p_lp_urv;
-
-            if (isHighSideTop) { // HP is on top (the "other" leg)
-                p_hp_lrv = other_leg_pressure;
-                p_hp_urv = other_leg_pressure;
-                p_lp_lrv = process_side_pressure_at_lrv;
-                p_lp_urv = process_side_pressure_at_urv;
-            } else { // HP is on bottom (the process leg)
-                p_hp_lrv = process_side_pressure_at_lrv;
-                p_hp_urv = process_side_pressure_at_urv;
-                p_lp_lrv = other_leg_pressure;
-                p_lp_urv = other_leg_pressure;
-            }
-
-            // Final DP calculation
-            const lrv = p_hp_lrv - p_lp_lrv;
-            const urv = p_hp_urv - p_lp_urv;
-            const span = urv - lrv;
-
-            lrvResultEl.textContent = lrv.toFixed(2);
-            urvResultEl.textContent = urv.toFixed(2);
-            spanResultEl.textContent = Math.abs(span).toFixed(2);
-
-            xLabel.textContent = `X = ${X || 0}`;
-        }
-
-
-        function calculateFlow() {
-            const isSqrt = sqrtToggle.checked;
-            const maValue = parseFloat(maInput.value);
-            const dpPercent = ((maValue - 4) / 16) * 100;
-            let flowPercent = isSqrt ? (dpPercent >= 0 ? Math.sqrt(dpPercent / 100) * 100 : 0) : dpPercent;
-            flowResultEl.textContent = `${flowPercent.toFixed(2)} %`;
-        }
-
-        function calculateFlowSimulation() {
-            const urv = parseFloat(transmitterUrvInput.value) || 0;
-            const desiredFlow = parseFloat(desiredFlowInput.value) || 0;
-            const flowDecimal = desiredFlow / 100;
-            const requiredDp = (flowDecimal * flowDecimal) * urv;
-            simulationResultEl.textContent = requiredDp.toFixed(3);
-        }
-
-        // --- Initial calls to set everything up ---
-        calculateLevel();
-        calculateFlow();
-        calculateFlowSimulation();
-    });
     </script>
 
 </body>
