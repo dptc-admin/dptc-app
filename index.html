@@ -301,7 +301,7 @@
                         <svg id="diagram" viewBox="46 -247 400 200" overflow="visible" width="400" height="200">
 
                             <!-- ① the part that appears/disappears when installationToggle is ON -->
-                            <g id="install-group" transform="translate(0,20)">
+                            <g id="install-group" transform="translate(0,30)">
                                 <!-- circle with “LT” -->
                                 <circle cx="52" cy="80" r="8" fill="#fff" stroke="#000"></circle>
                                 <text x="52" y="84" text-anchor="middle" font-size="10">LT</text>
@@ -313,11 +313,12 @@
                                 <g id="level-rect">
                                     <rect x="40" y="97" width="24" height="12" fill="#eee" stroke="#000"></rect>
                                     <line x1="52" y1="89" x2="52" y2="109" stroke="#000"></line>
-                                    <text id="left-char" x="46" y="107" text-anchor="middle" font-size="10">H</text>
-                                    <text id="right-char" x="58" y="107" text-anchor="middle" font-size="10">L</text>
+                                    <text id="left-char" x="46" y="107" text-anchor="middle" font-size="10">L</text>
+                                    <text id="right-char" x="58" y="107" text-anchor="middle" font-size="10">H</text>
                                 </g>
 
                                 <line x1="65" y1="103" x2="68" y2="103" stroke="#000"></line>
+                                <line id="leftsideline" x1="36" y1="103" x2="40" y2="103" stroke="#000" class=""></line>
                             </g>
 
                             <!-- ② the part that always shows (triangle + line) -->
@@ -330,9 +331,10 @@
                                 <line x1="92" y1="103" x2="95" y2="103" stroke="#000"></line>
                                 <polygon points="92,95 82,102 92,109" fill="#fff" stroke="#000"></polygon>
                                 <line id="line-dissapear" class="" x1="68" y1="103" x2="68" y2="133" stroke="#000"></line>
-                                <line id="line-dissapear4" x1="36" y1="-147" x2="86" y2="-147" stroke="#000"></line>
-                                <line id="line-dissapear3" x1="36" y1="133" x2="40" y2="133" stroke="#000"></line>
-                                <line id="line-dissapear2" class="" x1="36" y1="133" x2="36" y2="-147" stroke="#000"></line>
+                                <line x1="36" y1="-147" x2="86" y2="-147" stroke="#000" class=""></line>
+
+                                <line class="" x1="36" y1="103" x2="36" y2="-147" stroke="#000"></line>
+                                <line id="line-dissapear2" class="" x1="36" y1="103" x2="36" y2="133" stroke="#000"></line>
                             </g>
                         </svg>
 
@@ -405,7 +407,7 @@
         <!-- Footer -->
         <footer class="text-center py-8">
             <p class="text-sm text-gray-500">Created by Wade Oliver</p>
-            <p class="text-sm text-gray-500">(v1.007)</p>
+            <p class="text-sm text-gray-500">(v1.008)</p>
         </footer>
     </div>
 
@@ -451,8 +453,6 @@
             const installGroup = document.getElementById('install-group');
             const lineDissapear = document.getElementById('line-dissapear');
             const lineDissapear2 = document.getElementById('line-dissapear2');
-            const lineDissapear3 = document.getElementById('line-dissapear3');
-            const lineDissapear4 = document.getElementById('line-dissapear4');
             const sqrtToggle = document.getElementById('sqrtToggle');
             const maSlider = document.getElementById('maSlider');
             const maInput = document.getElementById('maInput');
@@ -616,19 +616,15 @@
                     installGroup.setAttribute('transform', 'translate(0,30)');
                     lineDissapear.classList.remove('hidden');
                     lineDissapear2.classList.remove('hidden');
-                    lineDissapear3.classList.remove('hidden');
-                    lineDissapear4.classList.remove('hidden');
                 } else {
                     // reset back to original
                     installGroup.setAttribute('transform', 'translate(0,0)');
                     lineDissapear.classList.add('hidden');
                     lineDissapear2.classList.add('hidden');
-                    lineDissapear3.classList.add('hidden');
-                    lineDissapear4.classList.add('hidden');
                 }
 
                 xLabel.textContent = `${X || 0}"`;
-                resultsText.textContent = `Level Calibration Results (inH₂O) ${tagNameFR}`;
+                resultsText.textContent = `Level Calibration Results (inH₂O) for ${tagNameFR}`;
                 
             }
 
@@ -655,7 +651,7 @@
                 }
 
                 xLabel.textContent = `${X || 0}"`;
-                resultsText.textContent = `Level Calibration Results (inH₂O) ${tagNameFR}`;
+                resultsText.textContent = `Level Calibration Results (inH₂O) for ${tagNameFR}`;
 
                 const calculatedSg = Math.abs(span) / X;
                 reverseSgResultEl.textContent = calculatedSg.toFixed(3);
