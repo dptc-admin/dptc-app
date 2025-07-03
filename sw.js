@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dptc-app-v1.009';
+const CACHE_NAME = 'dptc-app-v1.01';
 const ASSETS = [
     '/',
     '/index.html',
