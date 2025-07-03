@@ -408,7 +408,7 @@
         <!-- Footer -->
         <footer class="text-center py-8">
             <p class="text-sm text-gray-500">Created by Wade Oliver</p>
-            <p class="text-sm text-gray-500">(v1.01)</p>
+            <p class="text-sm text-gray-500">(v1.02)</p>
         </footer>
     </div>
 
@@ -424,6 +424,7 @@
             const pressureSideToggle = document.getElementById('pressureSideToggle');
             const levelTypeToggle = document.getElementById('levelTypeToggle');
             const tapDistanceInput = document.getElementById('tapDistance');
+            const tagNumberInput = document.getElementById('tagNumber');
             const processSgInput = document.getElementById('processSg');
             const processSgLabel = document.getElementById('processSgLabel');
             const interfaceSgContainer = document.getElementById('interfaceSgContainer');
@@ -498,7 +499,7 @@
             });
 
             // Listeners for Main Calculator
-            const mainCalcInputs = [installationToggle, pressureSideToggle, levelTypeToggle, tapDistanceInput, processSgInput, interfaceSgInput, sealLiquidSgInput];
+            const mainCalcInputs = [installationToggle, pressureSideToggle, levelTypeToggle, tapDistanceInput, tagNumberInput, processSgInput, interfaceSgInput, sealLiquidSgInput];
             mainCalcInputs.forEach(input => input.addEventListener('input', calculateLevel));
             glycolBtn.addEventListener('click', () => { sealLiquidSgInput.value = 1.13; calculateLevel(); });
             glycerinBtn.addEventListener('click', () => { sealLiquidSgInput.value = 1.26; calculateLevel(); });
@@ -515,7 +516,7 @@
             });
 
             // Listeners for Reverse Calculator
-            const reverseCalcInputs = [revTapDistanceInput, asFoundLrvInput, asFoundUrvInput, revSealLiquidSgInput, revPressureSideToggle];
+            const reverseCalcInputs = [revTapDistanceInput, tagNumberInput, asFoundLrvInput, asFoundUrvInput, revSealLiquidSgInput, revPressureSideToggle];
             reverseCalcInputs.forEach(input => input.addEventListener('input', calculateProcessSg));
             revGlycolBtn.addEventListener('click', () => { revSealLiquidSgInput.value = 1.13; calculateProcessSg(); });
             revGlycerinBtn.addEventListener('click', () => { revSealLiquidSgInput.value = 1.26; calculateProcessSg(); });
