@@ -211,7 +211,7 @@
 
                     <!-- Main Results -->
                     <div class="mt-8 pt-6 border-t">
-                        <h3 class="text-xl font-semibold mb-4">Level Calibration Results (inH₂O)</h3>
+                        <h3 id="resultsText" class="text-xl font-semibold mb-4">Level Calibration Results (inH₂O)</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
                             <div class="bg-blue-100 p-4 rounded-lg">
                                 <h4 class="text-sm font-bold text-blue-800">LRV</h4>
@@ -301,7 +301,7 @@
                         <svg id="diagram" viewBox="46 -247 400 200" overflow="visible" width="400" height="200">
 
                             <!-- ① the part that appears/disappears when installationToggle is ON -->
-                            <g id="install-group" transform="translate(0,0)">
+                            <g id="install-group" transform="translate(0,20)">
                                 <!-- circle with “LT” -->
                                 <circle cx="52" cy="80" r="8" fill="#fff" stroke="#000"></circle>
                                 <text x="52" y="84" text-anchor="middle" font-size="10">LT</text>
@@ -313,21 +313,26 @@
                                 <g id="level-rect">
                                     <rect x="40" y="97" width="24" height="12" fill="#eee" stroke="#000"></rect>
                                     <line x1="52" y1="89" x2="52" y2="109" stroke="#000"></line>
-                                    <text id="left-char" x="46" y="107" text-anchor="middle" font-size="10">L</text>
-                                    <text id="right-char" x="58" y="107" text-anchor="middle" font-size="10">H</text>
+                                    <text id="left-char" x="46" y="107" text-anchor="middle" font-size="10">H</text>
+                                    <text id="right-char" x="58" y="107" text-anchor="middle" font-size="10">L</text>
                                 </g>
-                                <line id="line-dissapear" class="hidden" x1="65" y1="83" x2="65" y2="103" stroke="#000"></line>
+
+                                <line x1="65" y1="103" x2="68" y2="103" stroke="#000"></line>
                             </g>
 
                             <!-- ② the part that always shows (triangle + line) -->
                             <g id="triangle-group" transform="translate(0,0)">
                                 <!-- solid line from rectangle to triangle -->
-                                <line x1="65" y1="103" x2="71" y2="103" stroke="#000"></line>
+                                <line x1="68" y1="103" x2="71" y2="103" stroke="#000"></line>
                                 <!-- sideways triangle -->
                                 <polygon points="72,95 82,102 72,109" fill="#fff" stroke="#000"></polygon>
                                 <!-- line out the right side -->
                                 <line x1="92" y1="103" x2="95" y2="103" stroke="#000"></line>
                                 <polygon points="92,95 82,102 92,109" fill="#fff" stroke="#000"></polygon>
+                                <line id="line-dissapear" class="" x1="68" y1="103" x2="68" y2="133" stroke="#000"></line>
+                                <line id="line-dissapear4" x1="36" y1="-147" x2="86" y2="-147" stroke="#000"></line>
+                                <line id="line-dissapear3" x1="36" y1="133" x2="40" y2="133" stroke="#000"></line>
+                                <line id="line-dissapear2" class="" x1="36" y1="133" x2="36" y2="-147" stroke="#000"></line>
                             </g>
                         </svg>
 
@@ -339,7 +344,6 @@
                         <text id="x-label" x="258" y="225" text-anchor="middle" class="svg-text" style="fill: #374151; font-size:14px; font-weight:500;" writing-mode="tb-rl" glyph-orientation-vertical="0">X</text>
                         <line x1="258" y1="105" x2="258" y2="210" stroke="#4b5563" stroke-width="1.5" stroke-dasharray="4" marker-start="url(#arrow)"></line>
                         <line x1="258" y1="240" x2="258" y2="345" stroke="#4b5563" stroke-width="1.5" stroke-dasharray="4" marker-end="url(#arrow)"></line>
-                        <text id="tagNameLabel" x="150" y="10" text-anchor="middle" class="svg-text" style="fill: #374151; font-size:14px; font-weight:500;">Tag:</text>
                     </svg>
                 </div>
                 <!-- Flow Signal Calculator -->
@@ -401,7 +405,7 @@
         <!-- Footer -->
         <footer class="text-center py-8">
             <p class="text-sm text-gray-500">Created by Wade Oliver</p>
-            <p class="text-sm text-gray-500">(v1.005)</p>
+            <p class="text-sm text-gray-500">(v1.006)</p>
         </footer>
     </div>
 
@@ -440,11 +444,15 @@
 
             // Common elements
             const xLabel = document.getElementById('x-label');
-            const tagNameLabel = document.getElementById('tagNameLabel');
+            //const tagNameLabel = document.getElementById('tagNameLabel');
+            const resultsText = document.getElementById('resultsText');
             const rightChar = document.getElementById('right-char');
             const leftChar = document.getElementById('left-char');
             const installGroup = document.getElementById('install-group');
-            const lineDissapear = document.getElementById('line-dissapear');
+            const lineDissapear = document.getElementById('line-dissapear
+            const lineDissapear2 = document.getElementById('line-dissapear2');
+            const lineDissapear3 = document.getElementById('line-dissapear3');
+            const lineDissapear4 = document.getElementById('line-dissapear4');
             const sqrtToggle = document.getElementById('sqrtToggle');
             const maSlider = document.getElementById('maSlider');
             const maInput = document.getElementById('maInput');
@@ -596,25 +604,31 @@
 
 
                 if (pressureSideToggle.checked) {
-                    rightChar.textContent = "H";
-                    leftChar.textContent = "L";
-                } else {
                     rightChar.textContent = "L";
                     leftChar.textContent = "H";
+                } else {
+                    rightChar.textContent = "H";
+                    leftChar.textContent = "L";
                 }
 
                 if (installationToggle.checked) {
-                    // shift everything in install-group down by 20 units
-                    installGroup.setAttribute('transform', 'translate(0,20)');
+                    // shift everything in install-group down by 30 units
+                    installGroup.setAttribute('transform', 'translate(0,30)');
                     lineDissapear.classList.remove('hidden');
+                    lineDissapear2.classList.remove('hidden');
+                    lineDissapear3.classList.remove('hidden');
+                    lineDissapear4.classList.remove('hidden');
                 } else {
                     // reset back to original
                     installGroup.setAttribute('transform', 'translate(0,0)');
                     lineDissapear.classList.add('hidden');
+                    lineDissapear2.classList.add('hidden');
+                    lineDissapear3.classList.add('hidden');
+                    lineDissapear4.classList.add('hidden');
                 }
 
                 xLabel.textContent = `${X || 0}"`;
-                tagNameLabel.textContent = `Tag: ${tagNameFR}`;
+                resultsText.textContent = `Level Calibration Results (inH₂O) ${tagNameFR}`;
                 
             }
 
@@ -641,7 +655,7 @@
                 }
 
                 xLabel.textContent = `${X || 0}"`;
-                tagNameLabel.textContent = `Tag: ${tagNameFR}`;
+                resultsText.textContent = `Level Calibration Results (inH₂O) ${tagNameFR}`;
 
                 const calculatedSg = Math.abs(span) / X;
                 reverseSgResultEl.textContent = calculatedSg.toFixed(3);
