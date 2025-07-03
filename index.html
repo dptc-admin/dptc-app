@@ -407,7 +407,7 @@
         <!-- Footer -->
         <footer class="text-center py-8">
             <p class="text-sm text-gray-500">Created by Wade Oliver</p>
-            <p class="text-sm text-gray-500">(v1.008)</p>
+            <p class="text-sm text-gray-500">(v1.009)</p>
         </footer>
     </div>
 
@@ -465,6 +465,16 @@
             const interfaceLiquidRect = document.getElementById('interfaceLiquid');
             const processLiquidLabel = document.getElementById('processLiquidLabel');
             const interfaceLiquidLabel = document.getElementById('interfaceLiquidLabel');
+
+            // --- Attempt to Fix Rogue Scrolling ---
+
+            document.querySelectorAll('input[type="range"]').forEach(slider => {
+                slider.addEventListener('input', () => {
+                    if (document.activeElement && document.activeElement !== slider) {
+                        document.activeElement.blur();
+                    }
+                });
+            });
 
             // --- Event Listeners ---
 
